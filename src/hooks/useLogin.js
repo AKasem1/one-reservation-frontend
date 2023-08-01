@@ -7,40 +7,27 @@ export const useLogin = () => {
     const {dispatch} = useAuthContext()
     
 
-    const login = (username, password) => {
-      setIsLoading(true);
-      setError(null);
-      
-      fetch('/admin/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password })
-      })
-        .then(response => {
-          console.log(response);
-          return response.json();
+    const login = async (username, password) => {
+        setIsLoading(true)
+        setError(null)
+        const response = await fetch('/admin/login',{
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({username, password})
         })
-        .then(json => {
-          if (!json.ok) {
-            setError(json.error);
-            console.log("Cannot log in");
-            setIsLoading(false);
-          } else {
-            //save the user to local storage
-            localStorage.setItem('jwt', JSON.stringify(json.token));
-            localStorage.setItem('admin', JSON.stringify(json));
-            //update the auth context
-            dispatch({ type: 'LOGIN', payload: json });
-            setIsLoading(false);
-          }
-        })
-        .catch(error => {
-          console.error('Error in login:', error);
-          setError('Server error');
-          setIsLoading(false);
-        });
-    };
-    
-    return { login, isLoading, error };
-    
+        console.log(response)
+        const json = await response.json()
+        if(!response.ok){
+            setError(json.error)
+            console.log("Cannot log in")
+            setIsLoading(false)
+        }
+        else{
+            localStorage.setItem('jwt', JSON.stringify(json.token))
+            localStorage.setItem('admin', JSON.stringify(json))
+            dispatch({type: 'LOGIN', payload: json})
+            setIsLoading(false)
+        }
+    }
+    return {login, isLoading, error}
 }
