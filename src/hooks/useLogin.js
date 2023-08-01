@@ -10,7 +10,8 @@ export const useLogin = () => {
     const login = async (username, password) => {
         setIsLoading(true)
         setError(null)
-        const response = await fetch('/admin/login',{
+        try {
+          const response = await fetch('/admin/login',{
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({username, password})
@@ -28,6 +29,10 @@ export const useLogin = () => {
             dispatch({type: 'LOGIN', payload: json})
             setIsLoading(false)
         }
+        } catch (error) {
+          console.error('Error parsing JSON:', error);
+        }
+        
     }
     return {login, isLoading, error}
 }
