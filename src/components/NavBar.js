@@ -13,12 +13,14 @@ return(
             </Link>
             <nav>
                 <div className="navLinks">
+                    {admin &&(
                     <div>
                         <Link className="Links" to="/updateGrade">تعديل مادة</Link>
                         <Link className="Links" to="/">حجز جديد</Link>
                         <Link className="Links" to="/allGrades">أعداد الطباعة</Link>
                         <Link className="Links" to="/reservations">قائمة الحجوزات</Link>
                     </div>
+                    )}
                     
                 </div>
             </nav>
