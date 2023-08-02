@@ -10,6 +10,7 @@ const ClientTable = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [status, setStatus]= useState(false)
   const [searchQuery, setSearchQuery] = useState('');
+  console.log(backendURL)
 
   const openPopup = (student) => {
     setSelectedStudent(student);
