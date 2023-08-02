@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuthContext } from '../hooks/useAuthContext';
+import backendURL from '../config';
 
 const ClientTable = () => {
   const [students, setStudents] = useState([]);
@@ -24,7 +25,7 @@ const ClientTable = () => {
   };
 
   const deleteReservation = (reservationId) =>{
-    fetch(`reservation/deleteReservation/${reservationId}`,{
+    fetch(`${backendURL}/reservation/deleteReservation/${reservationId}`,{
       method:"DELETE",
       headers:{
           Authorization : `Bearer ${admin.token}`
@@ -38,7 +39,7 @@ const ClientTable = () => {
 }
 
   const onStatus = (reservationId) =>{
-    fetch(`reservation/updateStatus/${reservationId}`,{
+    fetch(`${backendURL}/reservation/updateStatus/${reservationId}`,{
       method:"PATCH",
       headers:{
           Authorization : `Bearer ${admin.token}`
@@ -52,7 +53,7 @@ const ClientTable = () => {
 }
 
 const offStatus = (reservationId) =>{
-  fetch(`reservation/updateStatusFalse/${reservationId}`,{
+  fetch(`${backendURL}/reservation/updateStatusFalse/${reservationId}`,{
     method:"PATCH",
     headers:{
         Authorization : `Bearer ${admin.token}`
@@ -66,7 +67,7 @@ const offStatus = (reservationId) =>{
 }
 
   useEffect(() => {
-    fetch('/reservation/allreservations', {
+    fetch(`${backendURL}/reservation/allreservations`, {
       headers: {
         'Authorization': `Bearer ${admin.token}`,
         'Content-Type': 'application/json'

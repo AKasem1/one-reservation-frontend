@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuthContext } from '../hooks/useAuthContext';
+import backendURL from '../config';
 
 const GradeTable = () => {
   const [grades, setGrades] = useState([]);
@@ -7,7 +8,7 @@ const GradeTable = () => {
   const { admin } = useAuthContext();
 
   useEffect(() => {
-    fetch('/grade/allgrades', {
+    fetch(`${backendURL}/grade/allgrades`, {
       headers: {
         'Authorization': `Bearer ${admin.token}`,
         'Content-Type': 'application/json'

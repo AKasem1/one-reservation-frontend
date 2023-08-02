@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { useAuthContext } from "../hooks/useAuthContext";
+import backendURL from '../config';
+
 const ReservationForm = () => {
   const p1modules = ['Arabic', 'Maths', 'English', 'Character Building']
   const p2modules = ['Arabic', 'Maths', 'English']
@@ -123,7 +125,7 @@ const ReservationForm = () => {
       }
     }
 
-    const response = await fetch('/reservation/newReservation', {
+    const response = await fetch(`${backendURL}/reservation/newReservation`, {
       method: 'POST',
       body: JSON.stringify(formData),
       headers: {

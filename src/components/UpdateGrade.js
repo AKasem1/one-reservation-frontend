@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useAuthContext } from "../hooks/useAuthContext";
+import backendURL from '../config';
 
 const UpdateGrade = () => {
     const [grade, setGrade] = useState(null);
@@ -20,7 +21,7 @@ const UpdateGrade = () => {
   
     const handleGradeChange = async (e) => {
       const { value } = e.target;
-      const response = await fetch(`/grade/getGrade/${value}`, {
+      const response = await fetch(`${backendURL}/grade/getGrade/${value}`, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${admin.token}`
@@ -65,7 +66,7 @@ const UpdateGrade = () => {
         stock: stock,
       };
       console.log(updatedData)
-      const updateResponse = await fetch(`/grade/updateGrade`, {
+      const updateResponse = await fetch(`${backendURL}/grade/updateGrade`, {
         method: 'PUT',
         body: JSON.stringify(updatedData),
         headers: {
