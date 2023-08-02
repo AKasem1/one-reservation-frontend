@@ -18,16 +18,17 @@ export const useLogin = () => {
         })
         console.log(response)
         const json = await response.json()
-        if(!response.ok){
-            setError(json.error)
-            console.log("Cannot log in")
-            setIsLoading(false)
-        }
-        else{
+        if(response.ok){
             localStorage.setItem('jwt', JSON.stringify(json.token))
             localStorage.setItem('admin', JSON.stringify(json))
             dispatch({type: 'LOGIN', payload: json})
             setIsLoading(false)
+        }
+      else {
+            console.log("Cannot log in")
+            const errorData = await response.json();
+            setError(errorData.error);
+            setIsLoading(false);
         }
         } catch (error) {
           console.error('Error parsing JSON:', error);
