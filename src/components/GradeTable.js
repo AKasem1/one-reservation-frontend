@@ -19,6 +19,9 @@ const GradeTable = () => {
         setGrades(result.grades)
         console.log("Grades: ", result.grades)
       })
+      .catch((error) => {
+        console.error('Error fetching data:', error); // Log any errors that occur
+      });
   }, [])
 
   const handleModuleChange = (gradeId) => (event) => {

@@ -77,6 +77,9 @@ const offStatus = (reservationId) =>{
         console.log("result ", result)
         setStudents(result.student)
       })
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+      });
   }, [])
   
   const handleGradeChange = (event) => {
