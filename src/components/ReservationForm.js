@@ -5,6 +5,7 @@ import backendURL from '../config';
 const ReservationForm = () => { 
   const [grades, setGrades] = useState([]);
   const [selectedModules, setSelectedModules] = useState({});
+  const [selectedGrades, setSelectedGrades] = useState({});
   const [error, setError] = useState(null)
   const [message, setMessage] = useState(null)
   const [emptyFields, setEmptyFields] = useState([])
@@ -164,23 +165,27 @@ const ReservationForm = () => {
   const handleAddFields = () => {
     setAdditionalFieldsCount((prevCount) => prevCount + 1);
   };
+  
   const handleGradeChange = (e, index) => {
     const { value } = e.target;
+    console.log("value is: ", value)
+    const selectedG = grades.find((g) => g.gradeName === value);
+    console.log("selectedGrade is: ", selectedG)
+    setSelectedGrades(selectedG)
     setFormData((prevFormData) => {
       const updatedGrades = [...prevFormData.grade];
       updatedGrades[index] = value;
   
       const updatedOptions = [...prevFormData.modules];
-      updatedOptions[index] = []; // Initialize options for the grade
+      updatedOptions[index] = [];
   
       const updatedCopiesNumber = [...prevFormData.copiesNumber];
-      updatedCopiesNumber[index] = []; // Initialize copiesNumber for the grade
+      updatedCopiesNumber[index] = [];
   
       return { ...prevFormData, grade: updatedGrades, modules: updatedOptions, copiesNumber: updatedCopiesNumber };
     });
   };
   const renderAdditionalFields = () => {
-    
     for (let i = 0; i < additionalFieldsCount; i++) {
       additionalFields.push(
         <div key={i}>
@@ -202,9 +207,9 @@ const ReservationForm = () => {
           {formData.grade[i] && (
   <div style={{ color: "red" }}>
     اختار المواد
-    {grades[i] && (
+    {selectedGrades && (
       <div className='checkbox-options'>
-        {grades[i].modules.map((module, moduleIndex) => (
+        {selectedGrades.modules.map((module, moduleIndex) => (
           <label key={module._id}>
             <input
               type="checkbox"
