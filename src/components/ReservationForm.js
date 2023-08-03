@@ -1,12 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuthContext } from "../hooks/useAuthContext";
 import backendURL from '../config';
 
-const ReservationForm = () => {
-  const p1modules = ['Arabic', 'Maths', 'English', 'Character Building']
-  const p2modules = ['Arabic', 'Maths', 'English']
-  const p3modules = ['Arabic', 'Maths', 'English']
-  const gradesArr = ['Prim 1', 'Prim 2', 'Prim 3', 'Prim 4', 'Prim 5', 'Prim 6', 'Prep 1', 'Prep 2', 'Prep 3']
+const ReservationForm = () => { 
+  const [grades, setGrades] = useState([]);
+  const [selectedModules, setSelectedModules] = useState({});
   const [error, setError] = useState(null)
   const [message, setMessage] = useState(null)
   const [emptyFields, setEmptyFields] = useState([])
@@ -23,6 +21,22 @@ const ReservationForm = () => {
       });
     const [additionalFieldsCount, setAdditionalFieldsCount] = useState(0);
 
+    useEffect(() => {
+      fetch(`${backendURL}/grade/allgrades`, {
+        headers: {
+          'Authorization': `Bearer ${admin.token}`,
+          'Content-Type': 'application/json'
+        },
+      }).then(res => res.json())
+        .then(result => {
+          console.log("result ", result)
+          setGrades(result.grades)
+          console.log("Grades: ", result.grades)
+        })
+        .catch((error) => {
+          console.error('Error fetching data:', error); // Log any errors that occur
+        });
+    }, [])
     const handleNameInputChange = (e) => {
       const { value } = e.target;
       setFormData((prevFormData) => ({ ...prevFormData, name: value }));
@@ -179,8 +193,8 @@ const ReservationForm = () => {
               value={formData.grade[i] || ''}
             >
             <option value="">الصف</option>
-            {gradesArr.map((g) => (
-              <option key={g} value={g}>{g}</option>
+            {grades.map((g) => (
+              <option key={g._id} value={g.gradeName}>{g.gradeName}</option>
             ))}
             </select>
           </label>
@@ -188,17 +202,17 @@ const ReservationForm = () => {
           {formData.grade[i] && (
   <div style={{ color: "red" }}>
     اختار المواد
-    {formData.grade[i] === 'Prim 1' && (
+    {grades[i] && (
       <div className='checkbox-options'>
-        {p1modules.map((module, moduleIndex) => (
-          <label key={module}>
+        {grades[i].modules.map((module, moduleIndex) => (
+          <label key={module._id}>
             <input
               type="checkbox"
-              name={module}
-              checked={formData.modules[i].includes(module)}
+              name={module.moduleName}
+              checked={formData.modules[i].includes(module.moduleName)}
               onChange={(e) => handleCheckboxChange(e, i)}
             />
-            {module}
+            {module.moduleName}
             <input 
             style={{ margin: '10px' }}
             type="number"
@@ -210,52 +224,6 @@ const ReservationForm = () => {
           </label>
         ))}
       </div>
-              )}
-              {formData.grade[i] === 'Prim 2' && (
-                <div className='checkbox-options'>
-                  {p2modules.map((module, moduleIndex) => (
-                    <label key={module}>
-                      <input
-                        type="checkbox"
-                        name={module}
-                        checked={formData.modules[i].includes(module)}
-                        onChange={(e) => handleCheckboxChange(e, i)}
-                      />
-                      {module}
-                      <input 
-                        style={{ margin: '10px' }}
-                        type="number"
-                        name="count"
-                        value={formData.copiesNumber[i][moduleIndex] || 0}
-                        required
-                        onChange={(e) => handleCopyCountChange(e, i, moduleIndex)}
-                        />
-                    </label>
-                  ))}
-                </div>
-              )}
-              {formData.grade[i] === 'Prim 3' && (
-                <div className='checkbox-options'>
-                  {p3modules.map((module, moduleIndex) => (
-                    <label key={module}>
-                      <input
-                        type="checkbox"
-                        name={module}
-                        checked={formData.modules[i].includes(module)}
-                        onChange={(e) => handleCheckboxChange(e, i)}
-                      />
-                      {module}
-                      <input 
-                        style={{ margin: '10px' }}
-                        type="number"
-                        name="count"
-                        value={formData.copiesNumber[i][moduleIndex] || 0}
-                        required
-                        onChange={(e) => handleCopyCountChange(e, i, moduleIndex)}
-                        />
-                    </label>
-                  ))}
-                </div>
               )}
             </div>
           )}
