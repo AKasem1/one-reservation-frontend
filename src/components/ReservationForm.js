@@ -77,13 +77,9 @@ const ReservationForm = () => {
     const handleCheckboxChange = (e, index) => {
       const { name, checked } = e.target;
       setFormData((prevFormData) => {
-        //console.log("prevdata: ", prevFormData)
         const updatedOptions = [...prevFormData.modules]; 
         console.log("updatedOptions: ", updatedOptions)
-        
         const gradeIndex = prevFormData.grade.findIndex((_, i) => i === index);
-        //console.log("gradeIndex: ", gradeIndex)
-    
         if (checked) {
           if (!updatedOptions[gradeIndex]) {
             updatedOptions[gradeIndex] = [];
@@ -199,7 +195,7 @@ const ReservationForm = () => {
             >
             <option value="">الصف</option>
             {grades.map((g) => (
-              <option key={g._id} value={g.gradeName}>{g.gradeName}</option>
+              <option key={g.gradeName} value={g.gradeName}>{g.gradeName}</option>
             ))}
             </select>
           </label>
@@ -210,7 +206,7 @@ const ReservationForm = () => {
     {selectedGrades && (
       <div className='checkbox-options'>
         {selectedGrades.modules.map((module, moduleIndex) => (
-          <label key={module._id}>
+          <label key={module.moduleName}>
             <input
               type="checkbox"
               name={module.moduleName}
