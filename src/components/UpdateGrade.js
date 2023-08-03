@@ -17,7 +17,7 @@ const UpdateGrade = () => {
     });
   
     const { admin } = useAuthContext();
-    const gradesArr = ['Prim 1', 'Prim 2', 'Prim 3', 'Prim 4', 'Prim 5', 'Prim 6', 'Prep 1', 'Prep 2', 'Prep 3'];
+    const gradesArr = ['Baby Class','KG1','KG2','Prim 1', 'Prim 2', 'Prim 3', 'Prim 4', 'Prim 5', 'Prim 6', 'Prep 1', 'Prep 2', 'Prep 3'];
   
     const handleGradeChange = async (e) => {
       const { value } = e.target;
@@ -86,7 +86,7 @@ const UpdateGrade = () => {
   return (
     <div>
       <form className="update-grade-form">
-      <h1>Update Grade</h1>
+      <h1>تعديل مادة</h1>
         <select
           style={{ margin: '10px', height: '50px', padding: '5px', fontSize: '20px', width: '100px' }}
           name="grade"
