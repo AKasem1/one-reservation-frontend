@@ -195,7 +195,7 @@ const ReservationForm = () => {
             >
             <option value="">الصف</option>
             {grades.map((g) => (
-              <option key={g.gradeName} value={g.gradeName}>{g.gradeName}</option>
+              <option key={g._id} value={g.gradeName}>{g.gradeName}</option>
             ))}
             </select>
           </label>
@@ -206,7 +206,7 @@ const ReservationForm = () => {
     {selectedGrades && (
       <div className='checkbox-options'>
         {selectedGrades.modules.map((module, moduleIndex) => (
-          <label key={module.moduleName}>
+          <label key={module._id}>
             <input
               type="checkbox"
               name={module.moduleName}
