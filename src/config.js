@@ -1,3 +1,3 @@
-const backendURL = "http://localhost:2024";
+const backendURL = "https://one-reservation-system.onrender.com";
 
 export default backendURL;
