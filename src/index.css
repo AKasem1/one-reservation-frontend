@@ -91,6 +91,7 @@ header a {
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 4px;
+  text-align: center;
 }
 
 .checkbox-options {
@@ -111,6 +112,7 @@ header a {
 
 .reservation-form-container button {
   display: block;
+  margin: auto;
   margin-top: 20px;
   padding: 10px 20px;
   background-color: #ff0000;

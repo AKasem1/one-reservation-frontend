@@ -18,7 +18,7 @@ const ReservationForm = () => {
         anotherphone: '',
         grade: [],
         modules: [],
-        copiesNumber: [],
+        copiesNumber: []
       });
     const [additionalFieldsCount, setAdditionalFieldsCount] = useState(0);
 
@@ -60,22 +60,25 @@ const ReservationForm = () => {
       console.log(formData.anotherphone)
     };
 
-    const handleCopyCountChange = (e, gradeIndex, moduleIndex) => {
+    const handleCopyCountChange = (e, moduleIndex, index) => {
       const { value } = e.target;
       const intValue = parseInt(value);
-      if (Number.isInteger(intValue)) {
-        setFormData((prevFormData) => {
-          const updatedCopiesNumber = [...prevFormData.copiesNumber];
-          updatedCopiesNumber[gradeIndex][moduleIndex] = intValue;
-          return { ...prevFormData, copiesNumber: updatedCopiesNumber };
-        });
-      } else {
-        console.log('Invalid input for copyCount');
-      }
+      setFormData((prevFormData) => {
+        const updatedCopiesNumber = [...prevFormData.copiesNumber]; 
+        const gradeIndex = prevFormData.grade.findIndex((_, i) => i === index);
+      
+        if (!updatedCopiesNumber[gradeIndex]) {
+          updatedCopiesNumber[gradeIndex] = [];
+        }
+      
+        updatedCopiesNumber[gradeIndex][moduleIndex] = intValue;
+      
+        return { ...prevFormData, copiesNumber: updatedCopiesNumber };
+      });
     };
     
     const handleCheckboxChange = (e, index) => {
-      const { name, checked } = e.target;
+      const { name, checked } = e.target
       setFormData((prevFormData) => {
         const updatedOptions = [...prevFormData.modules]; 
         console.log("updatedOptions: ", updatedOptions)
@@ -112,29 +115,43 @@ const ReservationForm = () => {
     console.log("form data",formData)
 
     if (!formData.name || !formData.phone) {
+      console.log(111)
       setError("Please fill in all required fields.");
       return;
     }
   
     if (formData.grade.length === 0 || formData.grade.includes("")) {
+      console.log(222)
       setError("Please select a grade for each reservation.");
       return;
     }
   
     for (let i = 0; i < formData.grade.length; i++) {
       if (formData.modules[i].length === 0) {
+      console.log(333)
+
         setError(`Please select modules for ${formData.grade[i]}.`);
         return;
       }
       if (formData.copiesNumber[i].length === 0) {
+      console.log(444)
         setError(`Please select number of copies for ${formData.modules[i]}.`);
         return;
       }
+      if(formData.copiesNumber[i].toString().includes('')){
+        formData.copiesNumber[i] = formData.copiesNumber[i].filter(copies => copies !== '');
+        console.log("YES: ", formData.copiesNumber[i][1])
+        
+      }
+      
       if(formData.grade[i] == ""){
+      console.log(555)
+
         setError(`Please select a grade.`);
         return;
       }
     }
+
 
     const response = await fetch(`${backendURL}/reservation/newReservation`, {
       method: 'POST',
@@ -147,10 +164,19 @@ const ReservationForm = () => {
     const json = await response.json()
     const emptyF = await response.json.emptyFields
     if (!response.ok) {
+      console.log(json.error)
+      console.log(json.error)
+      console.log(json.error)
+      console.log(json.error)
       setError(json.error)
       setEmptyFields(emptyF)
     }
     if (response.ok) {
+      console.log(null)
+      console.log(null)
+      console.log(null)
+      console.log(null)
+
       setError(null)
       setMessage(json.message)
       setEmptyFields([])
@@ -215,12 +241,12 @@ const ReservationForm = () => {
             />
             {module.moduleName}
             <input 
-            style={{ margin: '10px' }}
+            style={{ margin: '3px', minWidth: '22px' }}
             type="number"
             name="count"
             value={formData.copiesNumber[i][moduleIndex] || 0}
             required
-            onChange={(e) => handleCopyCountChange(e, i, moduleIndex)}
+            onChange={(e) => handleCopyCountChange(e,moduleIndex, i)}
             />
           </label>
         ))}
@@ -289,8 +315,8 @@ const ReservationForm = () => {
         <br />
         <br />
         <button onClick={handleSubmit} className='submit-button'>Submit</button>
-        {error && <div className="error">{error}</div>}
-        {message && <div className="successMessage">{message}</div>}
+        {error && <div className="error">{error.message}</div>}
+        {message && <div className="successMessage">{message.message}</div>} 
       </div>
     );
   };

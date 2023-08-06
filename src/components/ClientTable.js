@@ -6,14 +6,16 @@ const ClientTable = () => {
   const [students, setStudents] = useState([]);
   const [selectedGrade, setSelectedGrade] = useState('');
   const [selectedStudent, setSelectedStudent] = useState(null);
+  const [selectedReservationId, setSelectedReservationId] = useState(null);
   const { admin } = useAuthContext();
   const [isOpen, setIsOpen] = useState(false);
   const [status, setStatus]= useState(false)
   const [searchQuery, setSearchQuery] = useState('');
   console.log(backendURL)
 
-  const openPopup = (student) => {
+  const openPopup = (student, id) => {
     setSelectedStudent(student);
+    setSelectedReservationId(id);
     setIsOpen(true);
   };
   const onSubmit = () =>{
@@ -124,31 +126,40 @@ const offStatus = (reservationId) =>{
         />
       </div>
 
-    {isOpen && selectedStudent && (
+      {isOpen && selectedStudent && (
   <div className="popup">
     <div className="popup-content">
       <h2 className='student-name'>{selectedStudent.name}</h2>
-      <h3 className='student-grade' style={{fontWeight: "bold"}}>{selectedStudent.reservations[0].grade}</h3>
-      <div className='student-modules'>
-      <div style={{display: "flex",
-  justifyContent: "space-between",
-  marginBottom: "8px", fontSize: "18px", color: "red", fontWeight: 'bold'}}>
-      <span>المادة</span>
-      <span>عدد النسخ</span>
-      </div>
-        {selectedStudent.reservations[0].modules.map((module, index) => (
-          <div key={index}>
-            <span>{module}</span>
-            <span>{selectedStudent.reservations[0].copiesNumber[index]}</span>
-          </div>
-        ))}
-      </div>
-      <button onClick={() => offStatus(selectedStudent.reservations[0]._id)}>لم يستلم</button>
-      <button type="submit" onClick={() => onStatus(selectedStudent.reservations[0]._id)}>استلم</button>
-      <button type="submit" onClick={() => deleteReservation(selectedStudent.reservations[0]._id)}>إلغاء الحجز</button>
+      {selectedStudent.reservations.map((reservation, index) => (
+        <React.Fragment key={index}>
+          {reservation._id === selectedReservationId && (
+            <React.Fragment>
+              <h3 className='student-grade' style={{fontWeight: "bold"}}>{reservation.grade}</h3>
+              <div className='student-modules'>
+                <div style={{display: "flex",
+                  justifyContent: "space-between",
+                  marginBottom: "8px", fontSize: "18px", color: "red", fontWeight: 'bold'}}>
+                  <span>المادة</span>
+                  <span>عدد النسخ</span>
+                </div>
+                {reservation.modules.map((module, moduleIndex) => (
+                  <div key={moduleIndex}>
+                    <span>{module}</span>
+                    <span>{reservation.copiesNumber[moduleIndex]}</span>
+                  </div>
+                ))}
+              </div>
+              <button onClick={() => offStatus(reservation._id)}>لم يستلم</button>
+              <button type="submit" onClick={() => onStatus(reservation._id)}>استلم</button>
+              <button type="submit" onClick={() => deleteReservation(reservation._id)}>إلغاء الحجز</button>
+            </React.Fragment>
+          )}
+        </React.Fragment>
+      ))}
     </div>
   </div>
 )}
+
 
     <table className="grade-table">
       <thead>
@@ -169,7 +180,7 @@ const offStatus = (reservationId) =>{
                 <td>
                   <button
                     className='reservation-details'
-                    onClick={() => openPopup(student)}
+                    onClick={() => openPopup(student, reservation._id)}
                   >
                     تفاصيل الحجز
                   </button>
