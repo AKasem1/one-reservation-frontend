@@ -5,7 +5,8 @@ import backendURL from '../config';
 const ReservationForm = () => { 
   const [grades, setGrades] = useState([]);
   const [selectedModules, setSelectedModules] = useState({});
-  const [selectedGrades, setSelectedGrades] = useState({});
+  const [selectedGrades, setSelectedGrades] = useState([{}]);
+  const [selectedGradeOptions, setSelectedGradeOptions] = useState([])
   const [error, setError] = useState(null)
   const [message, setMessage] = useState(null)
   const [emptyFields, setEmptyFields] = useState([])
@@ -16,7 +17,7 @@ const ReservationForm = () => {
         address: '',
         phone: '',
         anotherphone: '',
-        grade: [],
+        grade: [{}],
         modules: [],
         copiesNumber: []
       });
@@ -35,7 +36,7 @@ const ReservationForm = () => {
           console.log("Grades: ", result.grades)
         })
         .catch((error) => {
-          console.error('Error fetching data:', error); // Log any errors that occur
+          console.error('Error fetching data:', error);
         });
     }, [])
     const handleNameInputChange = (e) => {
@@ -100,6 +101,8 @@ const ReservationForm = () => {
         return { ...prevFormData, modules: updatedOptions };
       });
     };
+    
+    
     
 
   const handleSubmit = async (e) => {
@@ -194,9 +197,14 @@ const ReservationForm = () => {
     const selectedG = grades.find((g) => g.gradeName === value);
     console.log("selectedGrade is: ", selectedG)
     setSelectedGrades(selectedG)
+    setSelectedGradeOptions((prevOptions) => {
+      const updatedOptions = [...prevOptions];
+      updatedOptions[index] = selectedG;
+      return updatedOptions;
+    });  
     setFormData((prevFormData) => {
       const updatedGrades = [...prevFormData.grade];
-      updatedGrades[index] = value;
+      updatedGrades[index] = selectedG;
   
       const updatedOptions = [...prevFormData.modules];
       updatedOptions[index] = [];
@@ -214,24 +222,24 @@ const ReservationForm = () => {
           <label>
             الصف
             <select
-              style={{ margin: '10px', fontSize:"20px"}}
-              name="grade"
-              onChange={(e) => handleGradeChange(e, i)}
-              value={formData.grade[i] || ''}
-            >
-            <option value="">الصف</option>
+            style={{ margin: '10px', fontSize:"20px"}}
+            name="grade"
+            onChange={(e) => handleGradeChange(e, i)}
+            value={formData.grade[i]?.gradeName || ''}
+          >
+            <option value="">اختر الصف</option>
             {grades.map((g) => (
               <option key={g._id} value={g.gradeName}>{g.gradeName}</option>
             ))}
-            </select>
+          </select>
           </label>
           <br />
           {formData.grade[i] && (
   <div style={{ color: "red" }}>
     اختار المواد
-    {selectedGrades && (
+    {formData.grade[i].modules && (
       <div className='checkbox-options'>
-        {selectedGrades.modules.map((module, moduleIndex) => (
+        {formData.grade[i].modules.map((module, moduleIndex) => (
           <label key={module._id}>
             <input
               type="checkbox"
@@ -315,8 +323,8 @@ const ReservationForm = () => {
         <br />
         <br />
         <button onClick={handleSubmit} className='submit-button'>Submit</button>
-        {error && <div className="error">{error.message}</div>}
-        {message && <div className="successMessage">{message.message}</div>} 
+        {error && <div className="error">{error}</div>}
+        {message && <div className="successMessage">{message}</div>} 
       </div>
     );
   };

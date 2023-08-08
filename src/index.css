@@ -199,8 +199,8 @@ header a {
 }
 .successMessage{
     padding: 10px;
-    background-color: #ffffff;
-    color: #00ff80;
+    background-color: #00962d;
+    color: #ffffff;
     border-radius: 4px;
     margin: 20px 0;
     border: 1px solid  #00ff80;
@@ -378,8 +378,24 @@ header a {
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   text-align: center;
+  position: relative;
 }
-
+.popup-close-button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  transform: translate(70%, -70%);
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  font-size: 18px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 .popup h2 {
   font-size: 24px;
   margin-bottom: 16px;

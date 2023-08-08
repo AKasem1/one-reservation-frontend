@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react'; 
 import { useAuthContext } from '../hooks/useAuthContext';
 import backendURL from '../config';
 
 const ClientTable = () => {
   const [students, setStudents] = useState([]);
+  const [grades, setGrades] = useState([]);
   const [selectedGrade, setSelectedGrade] = useState('');
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [selectedReservationId, setSelectedReservationId] = useState(null);
@@ -12,6 +13,22 @@ const ClientTable = () => {
   const [status, setStatus]= useState(false)
   const [searchQuery, setSearchQuery] = useState('');
   console.log(backendURL)
+  useEffect(() => {
+    fetch(`${backendURL}/grade/allgrades`, {
+      headers: {
+        'Authorization': `Bearer ${admin.token}`,
+        'Content-Type': 'application/json'
+      },
+    }).then(res => res.json())
+      .then(result => {
+        console.log("result ", result)
+        setGrades(result.grades)
+        console.log("Grades: ", result.grades)
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+      });
+  }, [])
 
   const openPopup = (student, id) => {
     setSelectedStudent(student);
@@ -110,8 +127,9 @@ const offStatus = (reservationId) =>{
         onChange={handleGradeChange}
       >
         <option value="">All</option>
-        <option value="Prim 1">Prim 1</option>
-        <option value="Prim 2">Prim 2</option>
+        {grades.map((g) => (
+              <option key={g._id} value={g.gradeName}>{g.gradeName}</option>
+            ))}
       </select>
       <label className="grade-select-label" style={{padding: "10px",fontSize: "20px"}}>إختر المرحلة</label>
     </div>
@@ -129,7 +147,9 @@ const offStatus = (reservationId) =>{
       {isOpen && selectedStudent && (
   <div className="popup">
     <div className="popup-content">
+    <button className="popup-close-button" onClick={closePopup}>X</button>
       <h2 className='student-name'>{selectedStudent.name}</h2>
+      <h2 className='student-name'>{selectedStudent.phone}</h2>
       {selectedStudent.reservations.map((reservation, index) => (
         <React.Fragment key={index}>
           {reservation._id === selectedReservationId && (
