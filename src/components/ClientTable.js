@@ -150,6 +150,7 @@ const offStatus = (reservationId) =>{
     <button className="popup-close-button" onClick={closePopup}>X</button>
       <h2 className='student-name'>{selectedStudent.name}</h2>
       <h2 className='student-name'>{selectedStudent.phone}</h2>
+      <h2 className='student-name'>{selectedStudent.address}</h2>
       {selectedStudent.reservations.map((reservation, index) => (
         <React.Fragment key={index}>
           {reservation._id === selectedReservationId && (
