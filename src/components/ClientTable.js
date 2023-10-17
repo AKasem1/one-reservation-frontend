@@ -4,7 +4,7 @@ import backendURL from '../config';
 //this line is test for deployment
 const ClientTable = () => {
   const [students, setStudents] = useState([]);
-  const [filteredStudents, setFilteredStudents] = useState([]);
+  //const [filteredStudents, setFilteredStudents] = useState([]);
   const [grades, setGrades] = useState([]);
   //let selectedGrade = ''
   const [selectedGrade, setSelectedGrade] = useState('');
@@ -128,9 +128,18 @@ const offStatus = (reservationId) =>{
       console.error('Error fetching selected grade:', error);
     });
   }
+  const filteredStudents = students.filter((student) => {
+    if (!selectedGrade) {
+      return true && (student.name.toLowerCase().includes(searchQuery.toLowerCase()) || student.phone.includes(searchQuery) ||
+           student.anotherphone.includes(searchQuery))
+    }
+    console.log("Selected Grade is: :", selectedGrade)
+    return student.reservations.some((reservation) => reservation.grade === selectedGrade) &&
+           (student.name.toLowerCase().includes(searchQuery.toLowerCase()) || student.phone.includes(searchQuery) ||
+           student.anotherphone.includes(searchQuery))
+  });
 
-
-  console.log("filteredStudents: ", filteredStudents)
+  //console.log("filteredStudents: ", filteredStudents)
   console.log("Students: ", students)
 
   return (
@@ -210,7 +219,29 @@ const offStatus = (reservationId) =>{
         </tr>
       </thead>
       <tbody>
-        { students.map((student, index) => (
+        { filteredStudents ?
+        filteredStudents.map((student, index) => (
+          <React.Fragment key={index}>
+            {student.reservations.map((reservation, i) => (
+              <tr key={`${index}-${i}`} className="grade-row">
+                <td>
+                  <button
+                    className='reservation-details'
+                    onClick={() => openPopup(student, reservation._id)}
+                  >
+                    تفاصيل الحجز
+                  </button>
+                </td>
+                <td>{reservation.status}</td>
+                <td>{reservation.modules.join(', ')}</td>
+                <td>{reservation.grade}</td>
+                <td className="studentData">{student.name}</td>
+                <td className="studentCode">{reservation.code}</td>
+              </tr>
+            ))}
+          </React.Fragment>
+        ))
+        : students.map((student, index) => (
           <React.Fragment key={index}>
             {student.reservations.map((reservation, i) => (
               <tr key={`${index}-${i}`} className="grade-row">
