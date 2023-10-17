@@ -131,12 +131,12 @@ const offStatus = (reservationId) =>{
   const filteredStudents = students.filter((student) => {
     if (!selectedGrade) {
       return true && (student.name.toLowerCase().includes(searchQuery.toLowerCase()) || student.phone.includes(searchQuery) ||
-           student.anotherphone.includes(searchQuery))
+           student.anotherphone.includes(searchQuery)) || student.reservations.some((reservation) => reservation.code.includes(searchQuery))
     }
     console.log("Selected Grade is: :", selectedGrade)
     return student.reservations.some((reservation) => reservation.grade === selectedGrade) &&
            (student.name.toLowerCase().includes(searchQuery.toLowerCase()) || student.phone.includes(searchQuery) ||
-           student.anotherphone.includes(searchQuery))
+           student.anotherphone.includes(searchQuery)) || student.reservations.some((reservation) => reservation.code.includes(searchQuery))
   });
 
   //console.log("filteredStudents: ", filteredStudents)
@@ -268,3 +268,13 @@ const offStatus = (reservationId) =>{
 );
 };
 export default ClientTable;
+// const filteredStudents = students.filter((student) => {
+//   if (!selectedGrade) {
+//     return true && (student.name.toLowerCase().includes(searchQuery.toLowerCase()) || student.phone.includes(searchQuery) ||
+//          student.anotherphone.includes(searchQuery) 
+//   }
+//   console.log("Selected Grade is: :", selectedGrade)
+//   return student.reservations.some((reservation) => reservation.grade === selectedGrade) &&
+//          (student.name.toLowerCase().includes(searchQuery.toLowerCase()) || student.phone.includes(searchQuery) ||
+//          student.anotherphone.includes(searchQuery) || student.reservations.some((reservation) => reservation.code.includes(searchQuery)))
+// });
