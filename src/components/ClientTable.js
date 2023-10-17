@@ -4,7 +4,9 @@ import backendURL from '../config';
 //this line is test for deployment
 const ClientTable = () => {
   const [students, setStudents] = useState([]);
+  const [filteredStudents, setFilteredStudents] = useState([]);
   const [grades, setGrades] = useState([]);
+  //let selectedGrade = ''
   const [selectedGrade, setSelectedGrade] = useState('');
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [selectedReservationId, setSelectedReservationId] = useState(null);
@@ -102,20 +104,34 @@ const offStatus = (reservationId) =>{
       });
   }, [])
   
+
   const handleGradeChange = (event) => {
-    setSelectedGrade(event.target.value);
-    console.log("You have chosen: ", selectedGrade)
+
+    setSelectedGrade (event.target.value);
+    console.log("You have chosen: ", selectedGrade);
+    filterrrr(event.target.value)
   };
 
-  const filteredStudents = students.filter((student) => {
-    if (!selectedGrade) {
-      return true && (student.name.toLowerCase().includes(searchQuery.toLowerCase()) || student.phone.includes(searchQuery) ||
-           student.anotherphone.includes(searchQuery))
-    }
-    return student.reservations.some((reservation) => reservation.grade === selectedGrade) &&
-           (student.name.toLowerCase().includes(searchQuery.toLowerCase()) || student.phone.includes(searchQuery) ||
-           student.anotherphone.includes(searchQuery))
-  });
+  const filterrrr = (selectedGrade) => {
+    fetch(`${backendURL}/reservation/selectedGrade/${selectedGrade}`, {
+      headers: {
+        'Authorization': `Bearer ${admin.token}`,
+        'Content-Type': 'application/json'
+      },
+    }).then(res => res.json())
+    .then(result => {
+      //setFilteredStudents(result)
+      console.log("selected grade result: ", result)
+      setStudents(result.reservations)
+
+    }).catch((error) => {
+      console.error('Error fetching selected grade:', error);
+    });
+  }
+
+
+  console.log("filteredStudents: ", filteredStudents)
+  console.log("Students: ", students)
 
   return (
     <div className="grade-table-container">
@@ -194,7 +210,7 @@ const offStatus = (reservationId) =>{
         </tr>
       </thead>
       <tbody>
-        {filteredStudents.map((student, index) => (
+        { students.map((student, index) => (
           <React.Fragment key={index}>
             {student.reservations.map((reservation, i) => (
               <tr key={`${index}-${i}`} className="grade-row">
