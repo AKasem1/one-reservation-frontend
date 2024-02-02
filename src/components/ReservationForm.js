@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuthContext } from "../hooks/useAuthContext";
 import backendURL from '../config';
+import { useStudentsContext } from "../hooks/useStudentsContext";
 
 const ReservationForm = () => { 
   const [grades, setGrades] = useState([]);
@@ -22,6 +23,31 @@ const ReservationForm = () => {
         copiesNumber: []
       });
     const [additionalFieldsCount, setAdditionalFieldsCount] = useState(0);
+    const [isSuccessVisible, setIsSuccessVisible] = useState(false);
+    const [componentKey,  setComponentKey] = useState(false);
+    const {student, dispatch} = useStudentsContext();
+
+    useEffect(() => {
+      if (isSuccessVisible) {
+        const timeoutId = setTimeout(() => {
+          setMessage(null);
+          setIsSuccessVisible(false);
+        }, 20000);
+        
+      }
+    }, [isSuccessVisible, message]);
+
+    const resetFormData = () => {
+      setFormData({
+        name: '',
+        address: '',
+        phone: '',
+        anotherphone: '',
+        grade: [{}],
+        modules: [],
+        copiesNumber: []
+      });
+    };
 
     useEffect(() => {
       fetch(`${backendURL}/grade/allgrades`, {
@@ -175,16 +201,15 @@ const ReservationForm = () => {
       setEmptyFields(emptyF)
     }
     if (response.ok) {
-      console.log(null)
-      console.log(null)
-      console.log(null)
-      console.log(null)
-
+      setIsSuccessVisible(true)
+      setComponentKey((prevKey) => prevKey + 1);
+      resetFormData()
       setError(null)
       setMessage(json.message)
       setEmptyFields([])
       console.log('new reservation added:', json)
       console.log('new /reservation added:', json.message)
+      dispatch({type: 'CREATE_STUDENT', payload: json.student})
     }
   }
   const handleAddFields = () => {
@@ -249,9 +274,9 @@ const ReservationForm = () => {
             />
             {module.moduleName}
             <input 
-            style={{ margin: '3px', minWidth: '22px' }}
             type="number"
             name="count"
+            className='copiesCount'
             value={formData.copiesNumber[i][moduleIndex] || 0}
             required
             onChange={(e) => handleCopyCountChange(e,moduleIndex, i)}
@@ -270,51 +295,69 @@ const ReservationForm = () => {
 
 
   return (
+    <div key={componentKey}>
+      <section
+        className="p-5 w-100 animated-section slide-in-right"
+        style={{
+          borderRadius: ".5rem .5rem 0 0",
+        }}
+      >
     <div className='reservation-form-container'>
-      <h1>حجز جديد</h1>
+      <h1 style={{color:"red"}}>حجز جديد</h1>
       <form>
-        <label>
-          اسم الطالب
-          <input
-          style={{margin: '10px'}}
-            type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleNameInputChange}
-          />
-        </label>
-        <br />
-        <label>
-          رقم التليفون
-          <input
-          style={{margin: '10px'}}
-            type="text"
-            name="phone"
-            value={formData.phone}
-            onChange={handlePhoneInputChange}
-          />
-        </label>
-        <label>
-          رقم تليفون آخر
-          <input
-          style={{margin: '10px'}}
-            type="text"
-            name="phone"
-            value={formData.anotherphone}
-            onChange={handleAnotherPhoneInputChange}
-          />
-        </label>
-        <br />
-        <label>
-          العنوان
-          <input
-          style={{margin: '10px'}}
-            type="text"
-            name="address"
-            value={formData.address}
-            onChange={handleAddressInputChange}
-          />
-        </label>
+      <div className="form-row">
+          <div className="form-group">
+            <label>
+              اسم الطالب
+              <input
+                style={{ margin: '10px' }}
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleNameInputChange}
+              />
+            </label>
+          </div>
+          <div className="form-group">
+            <label>
+              رقم التليفون
+              <input
+                style={{ margin: '10px' }}
+                type="text"
+                name="phone"
+                value={formData.phone}
+                onChange={handlePhoneInputChange}
+              />
+            </label>
+          </div>
+        </div>
+
+        <div className="form-row">
+          <div className="form-group">
+            <label>
+              رقم تليفون آخر
+              <input
+                style={{ margin: '10px' }}
+                type="text"
+                name="anotherphone"
+                value={formData.anotherphone}
+                onChange={handleAnotherPhoneInputChange}
+              />
+            </label>
+          </div>
+          <div className="form-group">
+            <label>
+              العنوان
+              <input
+                style={{ margin: '10px' }}
+                type="text"
+                name="address"
+                value={formData.address}
+                onChange={handleAddressInputChange}
+              />
+            </label>
+          </div>
+        </div>
         <br />
         
         {renderAdditionalFields()}
@@ -324,7 +367,9 @@ const ReservationForm = () => {
         <br />
         <button onClick={handleSubmit} className='submit-button'>Submit</button>
         {error && <div className="error">{error}</div>}
-        {message && <div className="successMessage">{message}</div>} 
+        {isSuccessVisible && <div className="successMessage">{message}</div>} 
+      </div>
+      </section>
       </div>
     );
   };

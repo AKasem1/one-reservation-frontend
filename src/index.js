@@ -12,7 +12,6 @@ root.render(
       <StudentsContextProvider>
         <App />
       </StudentsContextProvider>
-    <App />
     </AuthContextProvider>
   </React.StrictMode>
 );
