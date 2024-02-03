@@ -307,19 +307,7 @@ const ReservationForm = () => {
       <form>
       <div className="form-row">
           <div className="form-group">
-            <label>
-              اسم الطالب
-              <input
-                style={{ margin: '10px' }}
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleNameInputChange}
-              />
-            </label>
-          </div>
-          <div className="form-group">
-            <label>
+          <label>
               رقم التليفون
               <input
                 style={{ margin: '10px' }}
@@ -330,9 +318,33 @@ const ReservationForm = () => {
               />
             </label>
           </div>
+          <div className="form-group">
+          <label>
+              اسم الطالب
+              <input
+                style={{ margin: '10px' }}
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleNameInputChange}
+              />
+            </label>
+          </div>
         </div>
 
         <div className="form-row">
+          <div className="form-group">
+          <label>
+              العنوان
+              <input
+                style={{ margin: '10px' }}
+                type="text"
+                name="address"
+                value={formData.address}
+                onChange={handleAddressInputChange}
+              />
+            </label>
+          </div>
           <div className="form-group">
             <label>
               رقم تليفون آخر
@@ -342,18 +354,6 @@ const ReservationForm = () => {
                 name="anotherphone"
                 value={formData.anotherphone}
                 onChange={handleAnotherPhoneInputChange}
-              />
-            </label>
-          </div>
-          <div className="form-group">
-            <label>
-              العنوان
-              <input
-                style={{ margin: '10px' }}
-                type="text"
-                name="address"
-                value={formData.address}
-                onChange={handleAddressInputChange}
               />
             </label>
           </div>
